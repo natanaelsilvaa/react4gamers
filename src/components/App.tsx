@@ -8,19 +8,19 @@ function App() {
   return (
     <div className="App">
 
-    <div
+<div
        
-        style={{
-          position:'relative',
-          width: GAME_SIZE,
-          height: GAME_SIZE,
+    style={{
+        position:'relative',
+        width: GAME_SIZE,
+        height: GAME_SIZE,
           
-        }}
+}}
       >
         <Board />
       </div>
     </div> 
-    
+         
   );
 }
 
