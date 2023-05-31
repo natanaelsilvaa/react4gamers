@@ -1,7 +1,7 @@
-import useEventListener from '@use-it/event-listener';
-import { HEAD_OFFSET, TILE_SIZE } from '../../settings/constants';
+import { EDirection, HEAD_OFFSET, TILE_SIZE } from '../../settings/constants';
 import React from 'react'
 import './index.css';
+import useHeroMoviment from '../../hooks/useHeroMoviment';
 
 
 const initialPosition = {
@@ -10,33 +10,8 @@ const initialPosition = {
 };
 
 const Hero = () => {
-    const [ positionState, updatePositionState ] = React.useState(initialPosition);
-    const [ direction, updateDirectionState ] = React.useState('RIGHT');
-    
-   useEventListener('keydown', (event: {key:any;}) => {
-    
-       if (event.key === 'ArrowLeft') {
-        updatePositionState({   x: positionState.x - 1, y: positionState.y,})
-        updateDirectionState('LEFT');
-       } else if (event.key === 'ArrowRight') {
-        updatePositionState({   x: positionState.x + 1, y: positionState.y,});
-        updateDirectionState('RIGHT');
-       } else if (event.key === 'ArrowDown') {
-        updatePositionState({x: positionState.x, y: positionState.y -1});
-
-       } else if (event.key === 'ArrowUp') {
-           updatePositionState({ x: positionState.x, y: positionState.y + 1,});
-        }
-    });
-           
-     
-           
-
-    // setTimeout(() => {
-    //     const newPosition = { x: 14, y: 15};
-    //     updatePositionState(newPosition);
-    // }, 2000)
-
+  const {position, direction} = useHeroMoviment(initialPosition);
+  
 
     return(
     <div
@@ -44,13 +19,14 @@ const Hero = () => {
             position: 'absolute',
             width: TILE_SIZE,
             height: TILE_SIZE + HEAD_OFFSET,
-            bottom: TILE_SIZE * positionState.y,
-            left: TILE_SIZE * positionState.x,
+            bottom: TILE_SIZE * position.y,
+            left: TILE_SIZE * position.x,
             backgroundImage: "url(./assets-react4gamers/Hero.png)",
             backgroundRepeat: "no-repeat",
             backgroundPosition: `0px -${TILE_SIZE - HEAD_OFFSET}px`,
             animation: "hero-animation 1s steps(4) infinite",
-            transform: `scaleX(${direction === 'RIGHT' ? 1 : -1})`
+            transform: `scaleX(${direction === EDirection.RIGHT ? 1 : -1})`,
+            zIndex: 1,
             
         }}
      />
@@ -59,7 +35,4 @@ const Hero = () => {
 
 export default Hero;
 
-function createRoot(arg0: string, arg1: (event: any) => void) {
-    throw new Error('Function not implemented.');
-}
 
