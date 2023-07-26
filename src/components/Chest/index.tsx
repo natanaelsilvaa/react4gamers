@@ -10,7 +10,7 @@ const Chest = () => {
             position: 'absolute',
             width: TILE_SIZE,
             height: TILE_SIZE + HEAD_OFFSET,
-            bottom: TILE_SIZE * 4,
+            top: TILE_SIZE * 4,
             left: TILE_SIZE * 6 ,
             backgroundImage: "url(./assets-react4gamers/CHEST.png)",
             backgroundRepeat: "no-repeat",

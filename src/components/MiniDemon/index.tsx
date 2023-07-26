@@ -3,14 +3,25 @@ import './index.css';
 import { TILE_SIZE, HEAD_OFFSET, EDirection } from '../../settings/constants';
 import useEnemyMoviment from '../../hooks/useEnemyMoviment';
 
+
+// const moviment ={
+//   position: {x: 5, y: 5},
+//   direction: EDirection.RIGHT, 
+// };
   
-const MiniDemon = () => {
-  const moviment = useEnemyMoviment({x: 10, y: 10});
+interface IProps{
+  initialPosition: {x: number; y: number}
+};
+
+const MiniDemon = (props: IProps) => {
+   
+ const moviment = useEnemyMoviment(props.initialPosition);
+
     return(
     <div
         style={{
             position: 'absolute',
-            bottom: TILE_SIZE  * moviment.position.y,
+            top: TILE_SIZE  * moviment.position.y,
             left: TILE_SIZE * moviment.position.x,
             width: TILE_SIZE,
             height: TILE_SIZE + HEAD_OFFSET,

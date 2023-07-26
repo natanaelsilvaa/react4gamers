@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.css';
-import { HEAD_OFFSET, TILE_SIZE } from '../../settings/constants';
+import {  TILE_SIZE } from '../../settings/constants';
 
 
 const Trap = () => {
@@ -10,7 +10,7 @@ const Trap = () => {
             position: 'absolute',
             width: TILE_SIZE,
             height: 100,
-            bottom: TILE_SIZE * 7,
+            top: TILE_SIZE * 7,
             left: TILE_SIZE * 8,
             backgroundImage: "url(./assets-react4gamers/TRAP.png)",
             backgroundRepeat: "no-repeat",

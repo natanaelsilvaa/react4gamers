@@ -15,7 +15,7 @@ function useEnemyMoviment(initialPosition){
      const nextMoviment = handleNextPosition(randomDirection, positionState)
 
 
-
+     
      updateDirectionState(randomDirection);
      updatePositionState(nextMoviment);
     }, 2000); 

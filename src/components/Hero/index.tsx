@@ -19,7 +19,7 @@ const Hero = () => {
             position: 'absolute',
             width: TILE_SIZE,
             height: TILE_SIZE + HEAD_OFFSET,
-            bottom: TILE_SIZE * position.y,
+            top: TILE_SIZE * position.y,
             left: TILE_SIZE * position.x,
             backgroundImage: "url(./assets-react4gamers/Hero.png)",
             backgroundRepeat: "no-repeat",
