@@ -15,7 +15,7 @@ function Tile(props: IProps) {
             return 'darkgrey';
             
         case ECanvas.WALL: 
-            return 'red';
+            return 'yellow';
         
         case ECanvas.DOOR: 
             return 'white';
@@ -24,7 +24,7 @@ function Tile(props: IProps) {
             return 'chartreuse';
 
         case ECanvas.MINI_DEMON: 
-            return 'chartreuse';
+            return 'blue';
 
         case ECanvas.DEMON: 
             return 'red';

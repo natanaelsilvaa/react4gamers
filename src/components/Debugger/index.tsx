@@ -1,44 +1,36 @@
 import React from "react"
 import Tile from './Tile/index';
-import { ECanvas, canvas } from "../../contexts/canvas/helpers";
-import Trap from "../Trap";
-import MiniDemon from "../MiniDemon";
+import { CanvasContext } from './../../contexts/canvas/index';
 
+  function getCanvasMap(canvas) {
+      const tileArray = [];
 
- function getCanvasMap() {
-     const array = []
-
-     for (let y = 0; y < canvas.length;  y++) {
-       const canvasY = canvas[y]
+      for (let y = 0; y < canvas.length;  y++) {
+        const canvasY = canvas[y]
   
-     for (let x = 0; x < canvasY.length; x++) {
-       const canvasYX = canvasY[x];
+      for (let x = 0; x < canvasY.length; x++) {
+        const canvasYX = canvasY[x];
 
-       const position = { x: x, y: y }
-       const text = canvas[y][x] || canvasYX;
-       const key = `${x} - ${y}`;
+        const position = { x: x, y: y }
+        const text = canvas[y][x] || canvasYX;
+        const key = `${x} - ${y}`;
 
-       if (text === ECanvas.TRAP) {
-         array.push(<Trap key={key} initialPosition={position}  />) 
-       }
+        tileArray.push(<Tile key={key} position={position} text={text} />) 
 
-       if (text === ECanvas.MINI_DEMON) {
-         array.push(<MiniDemon key={key} initialPosition={position}  />) 
-       }
-
-
+      }
     }
+     
+    return tileArray;
    }
-   return array;
-  }
- 
+
 
 function Debugger() {
-    const tile = getCanvasMap();
-
-    return(
+  const canvasContext = React.useContext(CanvasContext)
+  const tiles = getCanvasMap(canvasContext.canvas);
+  
+  return(
         <div>
-           {tile}
+           {tiles}  
         </div> 
     );
 

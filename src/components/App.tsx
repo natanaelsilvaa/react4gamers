@@ -4,6 +4,7 @@ import { GAME_SIZE } from '../settings/constants';
 
 import './App.css';
 import Debugger from './Debugger';
+import CanvasProvider from '../contexts/canvas';
 
 function App() {
   return (
@@ -18,8 +19,10 @@ function App() {
 
         }}
       >
-        <Debugger />
-        <Board />
+        <CanvasProvider>
+          <Debugger />
+          <Board />
+        </CanvasProvider>
       </div>
     </div>
 
