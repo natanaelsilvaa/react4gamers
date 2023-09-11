@@ -1,38 +1,61 @@
-import React from "react"
-import Tile from './Tile/index';
-import { CanvasContext } from './../../contexts/canvas/index';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import { getCanvasMap } from '../../contexts/canvas/helpers';
+import { ICanvas } from '../../contexts/canvas/types';
+import Tile from './Tile';
 
-  function getCanvasMap(canvas) {
-      const tileArray = [];
+interface IProps {
+  canvas: ICanvas;
+}
 
-      for (let y = 0; y < canvas.length;  y++) {
-        const canvasY = canvas[y]
-  
-      for (let x = 0; x < canvasY.length; x++) {
-        const canvasYX = canvasY[x];
+function Debugger(props: PropsWithChildren<IProps>) {
+  const [tiles, setTiles] = useState<JSX.Element[]>([]);
 
-        const position = { x: x, y: y }
-        const text = canvas[y][x] || canvasYX;
-        const key = `${x} - ${y}`;
+  const [debug, setDebug] = useState<boolean>(false);
 
-        tileArray.push(<Tile key={key} position={position} text={text} />) 
 
-      }
+  useEffect(() => {
+    if (debug) {
+      loadTiles();
     }
-     
-    return tileArray;
-   }
 
+    function loadTiles() {
+      const canvas = getCanvasMap(props.canvas);
 
-function Debugger() {
-  const canvasContext = React.useContext(CanvasContext)
-  const tiles = getCanvasMap(canvasContext.canvas);
-  
-  return(
-        <div>
-           {tiles}  
-        </div> 
-    );
+      const tilesMap = Object.keys(canvas).map((key) => {
+        const { tile, position } = canvas[key];
 
-};
- export default Debugger;
+        return <Tile key={key} tileId={tile} position={position} />
+
+      });
+
+      setTiles(tilesMap);
+    }
+  }, [props.canvas, debug]);
+
+  return (
+    <>
+      <button
+        style={{
+          position: 'absolute',
+          top: 5,
+          right: 0,
+          padding: 10,
+          border: '1px solid white',
+          fontSize: 18,
+          color: 'white',
+          background: 'red',
+          cursor: 'pointer',
+          zIndex: 3,
+        }}
+        onClick={() => setDebug(!debug)}
+      >
+        DEBUG
+      </button>
+
+      {props.children}
+      {debug && tiles}
+    </>
+  );
+}
+
+export default Debugger;

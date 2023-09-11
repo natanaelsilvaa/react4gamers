@@ -1,30 +1,28 @@
 import React from 'react';
-import './index.css';
+import { IPosition } from '../../contexts/canvas/types';
 import { TILE_SIZE } from '../../settings/constants';
+import './index.css';
 
 interface IProps {
-    initialPosition: { x: number; y: number }
+  position: IPosition;
 }
 
-const Trap = (props: IProps) => {
-
-    return (
-        <div
-            style={{
-                position: 'absolute',
-                width: TILE_SIZE,
-                height: 100,
-                top: TILE_SIZE * props.initialPosition.y,
-                left: TILE_SIZE * props.initialPosition.x,
-                backgroundImage: "url(./assets-react4gamers/TRAP.png)",
-                backgroundRepeat: "no-repeat",
-                animation: "trap-animation 1s steps(4) infinite",
-
-
-            }}
-        />
-    )
+function Trap(props: IProps) {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: `${props.position.y * TILE_SIZE}px`,
+        left: `${props.position.x * TILE_SIZE}px`,
+        width: TILE_SIZE,
+        height: TILE_SIZE,
+        backgroundImage: `url(./assets-react4gamers/trap.png)`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: `0px 0px`,
+        animation: 'trap-animation 1s steps(8) infinite',
+      }}
+    />
+  );
 }
 
 export default Trap;
-

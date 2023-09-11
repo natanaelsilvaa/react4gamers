@@ -1,31 +1,24 @@
 import React from 'react';
-import Board from './Board';
-import { GAME_SIZE } from '../settings/constants';
-
-import './App.css';
-import Debugger from './Debugger';
 import CanvasProvider from '../contexts/canvas';
+import ChestsProvider from '../contexts/chest';
+import GameStatusProvider from '../contexts/gameStatus';
+import { GAME_SIZE } from '../settings/constants';
+import './App.css';
+import Game from './Game';
 
 function App() {
   return (
     <div className="App">
-
-      <div
-
-        style={{
-          position: 'relative',
-          width: GAME_SIZE,
-          height: GAME_SIZE,
-
-        }}
-      >
+      <div style={{ position: 'relative', width: GAME_SIZE, height: GAME_SIZE }}>
         <CanvasProvider>
-          <Debugger />
-          <Board />
+          <ChestsProvider>
+            <GameStatusProvider>
+              <Game />
+            </GameStatusProvider>
+          </ChestsProvider>
         </CanvasProvider>
       </div>
     </div>
-
   );
 }
 

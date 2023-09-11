@@ -1,47 +1,47 @@
-import React from 'react';
-import { EDirection, EWALKER } from "../../settings/constants";
 import useEventListener from '@use-it/event-listener';
+import { useContext, useState } from 'react';
 import { CanvasContext } from '../../contexts/canvas';
-import { ChestContext } from './../../contexts/chest/chest';
-import Chest from '../../components/Chest';
+import { IPosition } from '../../contexts/canvas/types';
+import { ChestsContext } from '../../contexts/chest';
+import { GameStatusContext } from '../../contexts/gameStatus';
+import { EDirections } from '../../settings/constants';
 
-function useHeroMoviment(initialPosition) {
-    const canvasContext = React.useContext(CanvasContext);
-    const chestContext = React.useContext(ChestContext);
+export default function useHeroMoviment(initialPositions: IPosition) {
+  const { updateCanvas } = useContext(CanvasContext);
+  const { updateIsWinner, updateIsDead, updateSteps } = useContext(GameStatusContext);
+  const { updateOpenedChests, openedChests, totalChests } = useContext(ChestsContext);
 
-    const [ positionState, updatePositionState ] = React.useState(initialPosition);
-    const [ direction, updateDirectionState ] = React.useState(EDirection.RIGHT);
+  const [position, setPosition] = useState<IPosition>(initialPositions);
+  const [direction, setDirection] = useState<EDirections>(EDirections.RIGHT);
 
-    useEventListener('keydown', (event:{key:any;})  => {
-      const direction = event.key as EDirection;
-      
-      if (direction.indexOf('Arrow') === -1) {
-        return;
-      }
-      
-      const moviment = canvasContext.updateCanvas(direction, positionState, EWALKER.HERO)
+  useEventListener('keydown', move);
 
-      if (moviment.nextMove.valid) {
-      updatePositionState(moviment.nextPosition);
-      updateDirectionState(direction);
-
-      if(moviment.nextMove.dead) {
-        console.log('Você morreu')
-      }
-
-      if(moviment.nextMove.chest) {
-        chestContext.updateOpenedChest();
-      }
+  function move(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key.indexOf('Arrow') === -1) {
+      return;
     }
-  });
-    
-    
-    return{
-      position: positionState,
-      direction: direction,
+
+    const keyDirection = event.key.replace('Arrow', '').toUpperCase() as EDirections;
+    const movement = updateCanvas(keyDirection, position, 'Hero');
+    setPosition(movement.position);
+    updateSteps();
+
+    if (keyDirection === EDirections.LEFT || keyDirection === EDirections.RIGHT) {
+      setDirection(keyDirection);
     }
+
+    if (movement.consequences.dead) {
+      updateIsDead();
+    }
+
+    if (movement.consequences.chest) {
+      updateOpenedChests(movement.position);
+    }
+
+    if (totalChests === openedChests.total && movement.consequences.door) {
+      updateIsWinner();
+    }
+  }
+
+  return { position, direction };
 }
-
-export default useHeroMoviment;
-
-

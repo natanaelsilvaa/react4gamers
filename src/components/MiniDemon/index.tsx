@@ -1,42 +1,33 @@
 import React from 'react';
-import './index.css';
-import { TILE_SIZE, HEAD_OFFSET, EDirection } from '../../settings/constants';
+import { IPosition } from '../../contexts/canvas/types';
 import useEnemyMoviment from '../../hooks/useEnemyMoviment';
+import { EDirections, HELMET_OFFSET, TILE_SIZE } from '../../settings/constants';
+import './index.css';
 
-
-// const moviment ={
-//   position: {x: 5, y: 5},
-//   direction: EDirection.RIGHT, 
-// };
-  
-interface IProps{
-  initialPosition: {x: number; y: number}
-};
-
-const MiniDemon = (props: IProps) => {
-   
- const moviment = useEnemyMoviment(props.initialPosition);
-
-    return(
-    <div
-        style={{
-            position: 'absolute',
-            top: TILE_SIZE  * moviment.position.y - HEAD_OFFSET,
-            left: TILE_SIZE * moviment.position.x,
-            width: TILE_SIZE,
-            height: TILE_SIZE + HEAD_OFFSET,
-            backgroundImage: "url(./assets-react4gamers/MINI-DEMON.png)",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: `0px -${TILE_SIZE - HEAD_OFFSET}px`,
-            animation: "mini-demon-animation 1s steps(4) infinite",
-            transform: `scaleX(${moviment.direction === EDirection.RIGHT ? 1 : -1})`,
-            
-            
-        }}
-     />
- )
+interface IProps {
+  initialPosition: IPosition;
 }
 
-export default MiniDemon
-;
+function MiniDemon(props: IProps) {
+  // const [direction, position] = [EDirections.LEFT, props.initialPosition];
+  const { position, direction } = useEnemyMoviment(props.initialPosition);
 
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: `${position.y * TILE_SIZE - HELMET_OFFSET}px`,
+        left: `${position.x * TILE_SIZE}px`,
+        width: TILE_SIZE,
+        height: TILE_SIZE + HELMET_OFFSET,
+        backgroundImage: `url(./assets-react4gamers/mini-demon.png)`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: `0px -${TILE_SIZE - HELMET_OFFSET}px`,
+        animation: 'mini-demon-animation 1s steps(4) infinite',
+        transform: `scaleX(${direction === EDirections.LEFT ? -1 : 1})`,
+      }}
+    />
+  );
+}
+
+export default MiniDemon;

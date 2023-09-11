@@ -1,50 +1,52 @@
-import React from "react";
-import { ECanvas, canvas, checkValidMoviment, handleNextPosition } from "./helpers";
+import React, { createContext, PropsWithChildren, useState } from 'react';
+import { EDirections } from '../../settings/constants';
+import { checkNextMoveIsValid, handleWalk, INITIAL_CANVAS } from './helpers';
+import { ECanvas, ICanvas, ICanvasMoviment, IPosition, IWalker } from './types';
 
-
-interface IProps {
-    children: React.ReactNode
+export interface ICanvasContext {
+  canvas: ICanvas;
+  updateCanvas: (
+    direction: EDirections,
+    currentPosition: IPosition,
+    walker: IWalker
+  ) => ICanvasMoviment;
 }
-export const CanvasContext = React.createContext({
-    canvas: [],
-    updateCanvas: (direction, currentPosition, walker) => null
+
+export const CanvasContext = createContext<ICanvasContext>({
+  canvas: [],
+  updateCanvas: () => ({ position: { x: 0, y: 0 }, consequences: { valid: true, dead: false, chest: false, door: false } }),
 });
 
+function CanvasProvider(props: PropsWithChildren<{}>) {
+  const [canvasState, setCanvasState] = useState<ICanvasContext>({
+    canvas: INITIAL_CANVAS,
+    updateCanvas: (direction, currentPosition, walker) => {
+      const nextPosition = handleWalk(direction, currentPosition);
+      const nextMove = checkNextMoveIsValid(canvasState.canvas, nextPosition, walker);
 
- function CanvasProvider(props : IProps) {
-    const [canvasState, updateCanvasState] = React.useState({
-       canvas: canvas, 
-       updateCanvas: (direction, currentPosition, walker) => {
-        const nextPosition = handleNextPosition(direction, currentPosition);
-        const nextMove = checkValidMoviment(nextPosition, walker);
-  
-        if(nextMove.valid) {
-            updateCanvasState((prevState) => {
-                const newCanvas = Object.assign([], prevState.canvas);
-                const currentValue = newCanvas[currentPosition.y][currentPosition.x]
+      if (nextMove.valid) {
+        setCanvasState(prevState => {
+          const newCanvas = [...prevState.canvas];
+          const currentValue = newCanvas[currentPosition.y][currentPosition.x] as ECanvas;
 
-                newCanvas[currentPosition.y][currentPosition.x] = ECanvas.FLOOR;
-                newCanvas[nextPosition.y][nextPosition.x] = currentValue;
+          newCanvas[currentPosition.y][currentPosition.x] = ECanvas.FLOOR;
+          newCanvas[nextPosition.y][nextPosition.x] = currentValue;
 
-                return{
-                    canvas: newCanvas,
-                    updateCanvas: prevState.updateCanvas,
+          return {
+            ...prevState,
+            canvas: newCanvas,
+          };
+        });
+      }
 
-                }
-            })
-        }
+      return {
+        consequences: nextMove,
+        position: nextMove.valid ? nextPosition : currentPosition,
+      };
+    },
+  });
 
-        return{
-            nextPosition,
-            nextMove
-        }
-       }
-    });
-
-    return (
-        <CanvasContext.Provider value={canvasState}>
-            {props.children}
-        </CanvasContext.Provider>
-    )
+  return <CanvasContext.Provider value={canvasState}>{props.children}</CanvasContext.Provider>;
 }
+
 export default CanvasProvider;

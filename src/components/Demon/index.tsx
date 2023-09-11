@@ -1,40 +1,34 @@
 import React from 'react';
-import './index.css';
-import { DEMON_SIZE, EDirection, TILE_SIZE } from '../../settings/constants';
+import { IPosition } from '../../contexts/canvas/types';
 import useEnemyMoviment from '../../hooks/useEnemyMoviment';
-
-
-
-// const Demon = () => {
-//   const moviment = useEnemyMoviment({x: 5, y: 5});
-
-
+import { DEMON_TILE_SIZE, EDirections, TILE_SIZE } from '../../settings/constants';
+import './index.css';
 
 interface IProps {
-  initialPosition: { x: number; y: number }
+  initialPosition: IPosition;
 }
 
-const Demon = (props: IProps) => {
-  const moviment = useEnemyMoviment(props.initialPosition)
-    return(
+function Demon(props: IProps) {
+  // const [direction, position] = [EDirections.LEFT, props.initialPosition];
+  const { position, direction } = useEnemyMoviment(props.initialPosition);
+
+  return (
     <div
-        style={{
-          position: 'absolute',
-          top: TILE_SIZE * moviment.position.y,
-          left: TILE_SIZE * moviment.position.x,
-          width: DEMON_SIZE,
-          height: DEMON_SIZE,
-          backgroundImage: "url(./assets-react4gamers/DEMON.png)",
-          backgroundRepeat: "no-repeat",
-          animation: "demon-animation 1s steps(4) infinite",
-          transform: `scaleX(${moviment.direction === EDirection.RIGHT ? 1 : -1})`,
-            
-            
-        }}
-     />
- )
+      style={{
+        position: 'absolute',
+        top: `${position.y * TILE_SIZE}px`,
+        left: `${position.x * TILE_SIZE}px`,
+        width: DEMON_TILE_SIZE,
+        height: DEMON_TILE_SIZE,
+        backgroundImage: `url(./assets-react4gamers/demon.png)`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: `0px 0px`,
+        animation: 'demon-animation 1s steps(4) infinite',
+        transform: `scaleX(${direction === EDirections.LEFT ? -1 : 1})`,
+        zIndex: 1,
+      }}
+    />
+  );
 }
 
-export default Demon
-;
-
+export default Demon;

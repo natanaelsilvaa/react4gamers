@@ -1,63 +1,57 @@
-import React from "react"
-import { TILE_SIZE } from "../../../settings/constants";
-import { ECanvas } from "../../../contexts/canvas/helpers";
-
+import React from 'react';
+import { ECanvas, IPosition } from '../../../contexts/canvas/types';
+import { TILE_SIZE } from '../../../settings/constants';
 
 interface IProps {
-    position: { x: number, y: number }
-    text: number;
+  tileId: ECanvas;
+  position: IPosition;
 }
-
 function Tile(props: IProps) {
-    function getTileColor() {
-    switch(props.text) {
-        case ECanvas.FLOOR:
-            return 'darkgrey';
-            
-        case ECanvas.WALL: 
-            return 'yellow';
-        
-        case ECanvas.DOOR: 
-            return 'white';
+  function getTileColor() {
+    switch (props.tileId) {
+      case ECanvas.FLOOR:
+        return 'darkgray';
 
-        case ECanvas.TRAP: 
-            return 'chartreuse';
+      case ECanvas.WALL:
+        return 'yellow';
 
-        case ECanvas.MINI_DEMON: 
-            return 'blue';
+      case ECanvas.DOOR:
+        return 'white';
 
-        case ECanvas.DEMON: 
-            return 'red';
+      case ECanvas.TRAP:
+        return 'chartreuse';
 
-        case ECanvas.CHEST: 
-            return 'cyan';
+      case ECanvas.MINI_DEMON:
+      case ECanvas.DEMON:
+        return 'red';
 
-        case ECanvas.HERO: 
-            return 'magenta';
+      case ECanvas.CHEST:
+        return 'cyan';
 
-        
-        
-
-    
-     }
+      case ECanvas.HERO:
+        return 'magenta';
     }
-    const color = getTileColor();
-    return (
-        <div style={{
-            position: "absolute",
-            left: TILE_SIZE * props.position.x,
-            top: TILE_SIZE * props.position.y,
-            width: TILE_SIZE,
-            height: TILE_SIZE,
-            color: color,
-            border: `2px solid ${color}`,
-            fontSize: 32,
-            zIndex: 2,
-        }}>
-            {props.text}
-        </div>
+  }
 
-    )
+  const color = getTileColor();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: `${props.position.y * TILE_SIZE}px`,
+        left: `${props.position.x * TILE_SIZE}px`,
+        border: `1px solid ${color}`,
+        color: color,
+        backgroundColor: 'transparent',
+        width: TILE_SIZE,
+        height: TILE_SIZE,
+        fontSize: 32,
+        zIndex: 2,
+      }}
+    >
+      {props.tileId}
+    </div>
+  );
 }
 
 export default Tile;

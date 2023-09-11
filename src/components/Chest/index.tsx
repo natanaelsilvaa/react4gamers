@@ -1,30 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { IPosition } from '../../contexts/canvas/types';
+import { ChestsContext } from '../../contexts/chest';
+import { TILE_SIZE } from '../../settings/constants';
 import './index.css';
-import { HEAD_OFFSET, TILE_SIZE } from '../../settings/constants';
-
 
 interface IProps {
-    initialPosition: { x: number; y: number }
-  }
-  
-  const Chest = (props: IProps) => {
-    return(
+  position: IPosition;
+}
+
+function Chest(props: IProps) {
+  const { openedChests } = useContext(ChestsContext);
+
+  const enableAnimation = openedChests.positions.find(
+    position => position.x === props.position.x && position.y === props.position.y
+  );
+
+  return (
     <div
-        style={{
-            position: 'absolute',
-            width: TILE_SIZE,
-            height: TILE_SIZE + HEAD_OFFSET,
-            top: TILE_SIZE * props.initialPosition.y,
-            left: TILE_SIZE * props.initialPosition.x,
-            backgroundImage: "url(./assets-react4gamers/CHEST.png)",
-            backgroundRepeat: "no-repeat",
-            animation: "chest-animation 1s steps(3) infinite",
-            
-        
-        }}
-     />
- )
+      style={{
+        position: 'absolute',
+        top: `${props.position.y * TILE_SIZE}px`,
+        left: `${props.position.x * TILE_SIZE}px`,
+        width: TILE_SIZE,
+        height: TILE_SIZE,
+        backgroundImage: `url(./assets-react4gamers/chest.png)`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: `0px 0px`,
+        animation: enableAnimation && 'chest-animation 1s steps(2) forwards',
+      }}
+    />
+  );
 }
 
 export default Chest;
-

@@ -1,68 +1,67 @@
-import React from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import { INITIAL_CANVAS_MAP } from '../../contexts/canvas/helpers';
+import { ECanvas, ICanvas } from '../../contexts/canvas/types';
 import { GAME_SIZE } from '../../settings/constants';
-import Hero from "../Hero";
-import MiniDemon from '../MiniDemon';
-import Demon from '../Demon';
 import Chest from '../Chest';
+import Demon from '../Demon';
+import Hero from '../Hero';
+import MiniDemon from '../MiniDemon';
 import Trap from '../Trap';
-import { ECanvas, canvas } from '../../contexts/canvas/helpers';
+import Door from './Door';
+import GameStatus from './GameStatus';
 
-function getCanvasMap() {
-  const array = []
-
-  for (let y = 0; y < canvas.length;  y++) {
-    const canvasY = canvas[y]
-
-  for (let x = 0; x < canvasY.length; x++) {
-    const canvasYX = canvasY[x];
-
-    const position = { x: x, y: y }
-    const text = canvas[y][x] || canvasYX;
-    const key = `${x} - ${y}`;
-
-    if (text === ECanvas.TRAP) {
-      array.push( <Trap key={key} initialPosition={position}/>)
-    }
-
-    if (text === ECanvas.MINI_DEMON) {
-      array.push( <MiniDemon key={key} initialPosition={position}/>)
-    }
-
-    if (text === ECanvas.DEMON) {
-      array.push( <Demon key={key} initialPosition={position}/>)
-    }
-
-    if (text === ECanvas.CHEST) {
-      array.push( <Chest key={key} initialPosition={position}/>)
-    }
-
-    if (text === ECanvas.HERO) {
-      array.push( <Hero key={key} initialPosition={position}/>)
-    }
-
-  }
- }
- return array;
+interface IProps {
+  canvas: ICanvas;
 }
 
-const elements = getCanvasMap()
+function Board(props: PropsWithChildren<IProps>) {
+  const [enemies, setEnemies] = useState<(JSX.Element | null)[]>([]);
 
+  useEffect(() => {
+    renderEnemies();
 
-const Board = () =>{
-    return(
-      <div>
-        {/* <MiniDemon initialPosition={{ x: 10, y: 8}} />
-        <MiniDemon initialPosition={{ x: 10, y: 10}} />
+    function renderEnemies() {
+      const enemiesMap = Object.keys(INITIAL_CANVAS_MAP).map((key) => {
+        const { tile, position } = INITIAL_CANVAS_MAP[key];
 
-       
-        <Demon />
-        <Chest />
-        <Trap /> */}
-        {elements}
-         <img src="./assets-react4gamers/tileset.gif" alt="" width={GAME_SIZE} height={GAME_SIZE} />  
-      </div>
-    )
+        if (tile === ECanvas.TRAP) {
+          return <Trap key={key} position={position} />;
+        }
+
+        if (tile === ECanvas.MINI_DEMON) {
+          return <MiniDemon key={key} initialPosition={position} />;
+        }
+
+        if (tile === ECanvas.DEMON) {
+          return <Demon key={key} initialPosition={position} />;
+        }
+
+        if (tile === ECanvas.CHEST) {
+          return <Chest key={key} position={position} />;
+        }
+
+        if (tile === ECanvas.HERO) {
+          return <Hero key={key} initialPosition={position} />;
+        }
+
+        return null;
+      }).filter(Boolean);
+
+      setEnemies(enemiesMap);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <>
+      <img src="./assets-react4gamers/tileset.gif" alt="Cenário" width={GAME_SIZE} height={GAME_SIZE} />
+
+      <Door />
+      <GameStatus />
+
+      {props.children}
+      {enemies}
+    </>
+  );
 }
-
 
 export default Board;
